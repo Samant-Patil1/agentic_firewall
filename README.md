@@ -19,8 +19,8 @@ AI Assistant (Claude Desktop)
 MCP Request
 ↓
 ┌───────────────────┐
-│  AI Agent Firewall │ ← Intercepts and analyzes every request
-│    (proxy.py)      │
+│  AI Agent Firewall│ ← Intercepts and analyzes every request
+│    (proxy.py)     │
 └───────────────────┘
 ┌─────┴─────┐
 BLOCK           ALLOW
@@ -50,32 +50,33 @@ Copy the `agentic_firewall` folder to the new computer. Keep the folder structur
 
 ```bash
 pip install pyyaml pync
-
+```
 Linux users: pync only works on macOS. On Linux, notifications will be logged but not shown as popups. You can install notify2 for Linux notifications if desired.
 
-Step 3: Find Your Python Path
+### Step 3: Find Your Python Path
 
 This is the most important step. Run:
-
+```bash
 which python3
-
+```
 Copy the exact output. It will look something like:
-
+```bash
 • /usr/local/bin/python3
 • /Users/yourname/anaconda3/bin/python3
 • /opt/homebrew/bin/python3
-
+```
 You MUST use this exact path in Step 4.
 
-Step 4: Configure Claude Desktop
+### Step 4: Configure Claude Desktop
 
 Open Claude Desktop's MCP config file:
 
 # On macOS:
+```bash
 code ~/Library/Application\ Support/Claude/claude_desktop_config.json
-
+```
 Use the ABSOLUTE path to python3 from Step 3. Here is an example config:
-
+```bash
 {
   "mcpServers": {
     "filesystem": {
@@ -97,7 +98,7 @@ Use the ABSOLUTE path to python3 from Step 3. Here is an example config:
     }
   }
 }
-
+```
 Important replacements:
 
 • Replace /FULL/PATH/TO/python3 with the exact output from which python3
@@ -105,7 +106,7 @@ Important replacements:
 • Replace /Users/yourname with your actual home directory
 • Update the /opt/homebrew/... paths if your Node.js or MCP servers are installed elsewhere
 
-Step 5: Restart Claude Desktop
+### Step 5: Restart Claude Desktop
 
 1. Fully quit Claude Desktop (Cmd+Q)
 2. Reopen it
@@ -141,13 +142,13 @@ Expected result:
 • No notification
 
 View Logs
-
+```bash
 python3 /FULL/PATH/TO/agentic_firewall/src/view_logs.py
-
+```
 Or watch live:
-
+```bash
 tail -f ~/.ai-firewall.log
-
+```
 Customizing Security Rules
 Edit rules.yaml to add or remove blocked paths and commands:
 
@@ -177,9 +178,9 @@ MCP servers show as "failed" in Claude Desktop
 Notifications don't appear on Linux
 
 pync is macOS-only. Install notify2:
-
+```bash
 pip install notify2
-
+```
 Then modify proxy.py to use notify2 instead of pync.
 
 Safe requests getting blocked (false positives)
@@ -205,41 +206,4 @@ Future Roadmap
 
 Credits
 
-Built by Samant Patil (Sammy).
-
-
----
-
-## How to Fix My Broken Write Functions
-
-My file-write tools stopped working because of a **session-level bug** in this OpenClaw instance. The parameters I send to tools are getting stripped or corrupted before they reach the execution layer. This is likely due to:
-
-1. **Session state corruption** after too many rapid tool calls
-2. **JSON parsing issue** in the gateway layer
-3. **Rate limiting or memory pressure** causing parameter loss
-
-### How to fix it on your end:
-
-**Option 1: Start a completely fresh session**
-- Run `/new` or `/reset` in this chat
-- This clears my session memory and reinitializes the tool connections
-
-**Option 2: Restart the OpenClaw Gateway daemon**
-```bash
-openclaw gateway restart
-
-Then start a new chat with me.
-
-Option 3: If you're running OpenClaw locally, clear the tool cache
-
-openclaw cache clear
-
-Option 4: Update OpenClaw to the latest version
-
-npm update -g openclaw
-# or
-brew upgrade openclaw
-
-The most reliable fix:
-
-Type /new right now. It takes 2 seconds and gives me a clean session with working tools.
+Built by Samant Patil.
